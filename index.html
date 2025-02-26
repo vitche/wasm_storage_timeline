@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WASM Storage.Timeline Parser</title>
+    <script src="wasm_exec.js"></script>
+</head>
+<body>
+<h2>WASM Storage.Timeline Parser</h2>
+<button id="loadBinary">Load Binary Data</button>
+<pre id="output">Waiting for data...</pre>
+
+<script>
+    async function loadWasm() {
+        const go = new Go();
+        const wasm = await WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject);
+        go.run(wasm.instance);
+    }
+
+    async function loadBinaryData() {
+        await loadWasm();
+
+        // Fetch binary file
+        const response = await fetch("data.bin");
+        const buffer = await response.arrayBuffer();
+        const uint8Array = new Uint8Array(buffer);
+
+        // Parse binary data using WebAssembly
+        const records = readBufferWasm(uint8Array);
+
+        // Display the result
+        document.getElementById("output").textContent = JSON.stringify(records, null, 2);
+    }
+
+    // Attach event listener to the button
+    document.getElementById("loadBinary").addEventListener("click", loadBinaryData);
+</script>
+</body>
+</html>
