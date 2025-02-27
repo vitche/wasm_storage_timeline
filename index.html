@@ -22,7 +22,14 @@
         await loadWasm();
 
         // Fetch binary file
-        const response = await fetch("data.bin");
+        const response = await fetch(
+            "https://google-news-observer-3.hype.dev/timeline/all/strings?schema=google-observer-2&timeLine=677aa3b36ed2282308157319",
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/storage-timeline",
+                },
+            });
         const buffer = await response.arrayBuffer();
         const uint8Array = new Uint8Array(buffer);
 
