@@ -57,6 +57,24 @@ func readBufferWasm(this js.Value, args []js.Value) interface{} {
 
 // Expose functions to JavaScript
 func main() {
-	js.Global().Set("readBufferWasm", js.FuncOf(readBufferWasm))
-	<-make(chan struct{}) // Blocks but allows JS interaction
+    // Create the StorageTimeline object
+    storageTimeline := make(map[string]interface{})
+
+    // Create the Timeline object inside StorageTimeline
+    timeline := make(map[string]interface{})
+
+    // Add the parse function to Timeline
+    timeline["parse"] = js.FuncOf(readBufferWasm)
+
+    // Add additional methods if needed
+    timeline["version"] = "1.0.0"
+
+    // Assemble the nested structure
+    storageTimeline["Timeline"] = js.ValueOf(timeline)
+
+    // Expose the top-level object to JavaScript
+    js.Global().Set("StorageTimeline", js.ValueOf(storageTimeline))
+
+    // Keep the Go program running
+    <-make(chan struct{})
 }

@@ -35,7 +35,7 @@
         const uint8Array = new Uint8Array(buffer);
 
         // Parse binary data using WebAssembly
-        const records = readBufferWasm(uint8Array);
+        const records = StorageTimeline.Timeline.parse(uint8Array);
 
         // Display the result
         document.getElementById("output").textContent = JSON.stringify(records, null, 2);
