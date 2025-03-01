@@ -14,7 +14,7 @@
 <script>
     async function loadWasm() {
         const go = new Go();
-        const wasm = await WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject);
+        const wasm = await WebAssembly.instantiateStreaming(fetch("storage_timeline.wasm"), go.importObject);
         go.run(wasm.instance);
     }
 
@@ -24,6 +24,7 @@
         // Fetch binary file
         const response = await fetch(
             "https://google-news-observer-3.hype.dev/timeline/all/strings?schema=google-observer-2&timeLine=677aa3b36ed2282308157319",
+            // "https://google-news-observer-3.hype.dev/timeline/all/strings?schema=google-observer-2&timeLine=679159556ed228230815902e",
             {
                 method: "GET",
                 headers: {

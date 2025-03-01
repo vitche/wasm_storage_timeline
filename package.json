@@ -1,0 +1,13 @@
+{
+  "name": "wasm_storage_timeline",
+  "version": "1.0.0",
+  "description": "`Storage.Timeline` database WASM implementation.",
+  "license": "LGPL-3.0-or-later",
+  "author": "Vitche Research Team Developer",
+  "type": "commonjs",
+  "main": "main.js",
+  "scripts": {
+    "build": "./build.sh",
+    "start": "http-server -p 8080"
+  }
+}

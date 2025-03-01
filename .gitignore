@@ -1,5 +1,5 @@
 .env
 .idea
 wasm_exec.js
-main.wasm
+*.wasm
 data.bin
