@@ -57,15 +57,13 @@ In a browser environment:
 
 For example, from the browser console or script:
 
-<script>  
-  window.onload = async () => {  
-    await window.StorageTimeline.Storage.initialize();  
-    const Schema = await window.StorageTimeline.Storage();  
-    const TimeLine = await Schema();  
-    const records = await TimeLine("test_data.bin");  
-    console.log('Parsed Records:', records);  
-  };  
-</script>  
+```javascript
+await window.StorageTimeline.Storage.initialize();  
+const Schema = await window.StorageTimeline.Storage();  
+const TimeLine = await Schema();  
+const records = await TimeLine("test_data.bin");  
+console.log('Parsed Records:', records);  
+```
 
 ---
 
