@@ -1,3 +1,4 @@
 .env
 .idea
 .wasm
+node_modules
