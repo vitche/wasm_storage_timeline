@@ -1,6 +1,6 @@
 {
   "name": "wasm_storage_timeline",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "`Storage.Timeline` database WASM implementation.",
   "license": "LGPL-3.0-or-later",
   "author": "Vitche Research Team Developer",
@@ -11,6 +11,5 @@
     "start": "http-server -p 8080"
   },
   "dependencies": {
-    "fetch": "^1.1.0"
   }
 }

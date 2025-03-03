@@ -1,5 +1,3 @@
-import fetch from "fetch";
-
 let golangInstance = null;
 
 const TimeLine = async function (uri) {
@@ -16,11 +14,6 @@ const TimeLine = async function (uri) {
             "Content-Type": "application/storage-timeline",
         },
     });
-
-    if (!response.ok) {
-        throw new Error(`Failed to fetch data: ${response.statusText}`);
-    }
-
     const buffer = await response.arrayBuffer();
     const dataBytes = new Uint8Array(buffer);
 
@@ -38,13 +31,7 @@ export default class Storage {
         }
 
         golangInstance = new Go();
-
-        const response = await fetch(wasmUrl);
-        if (!response.ok) {
-            throw new Error(`Failed to fetch WASM file: ${response.statusText}`);
-        }
-
-        const wasmModule = await WebAssembly.instantiateStreaming(response, golangInstance.importObject);
+        let wasmModule = await WebAssembly.instantiateStreaming(fetch(wasmUrl), golangInstance.importObject);
         golangInstance.run(wasmModule.instance);
     }
 
