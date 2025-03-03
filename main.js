@@ -69,12 +69,4 @@ const Storage = async function () {
     return Schema;
 };
 
-// Export based on environment
-if (typeof window !== "undefined") {
-    initialize().then(() => {
-        window.StorageTimeline.Storage = Storage;
-    });
-} else if (typeof module !== "undefined" && module.exports) {
-    module.exports = Storage;
-}
-
+export default Storage;
