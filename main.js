@@ -1,38 +1,7 @@
-let goInstance = null;
-// TODO: This is derived from the previous
-let wasmInitialized = false;
-
-const initialize = async function (wasmUrl = "storage_timeline.wasm") {
-
-    if (typeof Go === "undefined") {
-        throw new Error("wasm_exec.js not found or not loaded.");
-    }
-
-    // Avoid double-initialization
-    if (wasmInitialized) {
-        return;
-    }
-
-    goInstance = new Go();
-
-    // Handle different environments for fetching WASM
-    let wasmModule;
-    if (typeof window !== "undefined") {
-        // Browser environment
-        wasmModule = await WebAssembly.instantiateStreaming(fetch(wasmUrl), goInstance.importObject);
-    } else {
-        // Node.js environment
-        const fs = await import("fs/promises");
-        const wasmBuffer = await fs.readFile(wasmUrl);
-        wasmModule = await WebAssembly.instantiate(wasmBuffer, goInstance.importObject);
-    }
-
-    goInstance.run(wasmModule.instance);
-    wasmInitialized = true;
-};
+let golangInstance = null;
 
 const TimeLine = async function (uri) {
-    if (!wasmInitialized) {
+    if (!golangInstance) {
         throw new Error("WASM not initialized. Call initialize() first.");
     }
     if (!uri) {
@@ -64,9 +33,31 @@ const Schema = async function () {
     return TimeLine;
 };
 
-const Storage = async function () {
-    this.initialize = initialize;
-    return Schema;
-};
+export default class Storage {
+    async initialize(wasmUrl = "storage_timeline.wasm") {
 
-export default Storage;
+        if (typeof Go === "undefined") {
+            throw new Error("wasm_exec.js not found or not loaded.");
+        }
+
+        golangInstance = new Go();
+
+        // Handle different environments for fetching WASM
+        let wasmModule;
+        if (typeof window !== "undefined") {
+            // Browser environment
+            wasmModule = await WebAssembly.instantiateStreaming(fetch(wasmUrl), golangInstance.importObject);
+        } else {
+            // Node.js environment
+            const fs = await import("fs/promises");
+            const wasmBuffer = await fs.readFile(wasmUrl);
+            wasmModule = await WebAssembly.instantiate(wasmBuffer, golangInstance.importObject);
+        }
+
+        golangInstance.run(wasmModule.instance);
+    }
+
+    schema() {
+        return Schema;
+    }
+}
