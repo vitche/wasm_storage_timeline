@@ -1,63 +1,80 @@
-const StorageTimeline = (() => {
-    let wasmInitialized = false;
-    let goInstance = null;
+let goInstance = null;
+// TODO: This is derived from the previous
+let wasmInitialized = false;
 
-    const Timeline = {
-        initilize: async function (wasmUrl = "storage_timeline.wasm") {
-            if (typeof Go === "undefined") {
-                throw new Error("wasm_exec.js not found or not loaded.");
-            }
+const initialize = async function (wasmUrl = "storage_timeline.wasm") {
 
-            // Avoid double-initialization
-            if (wasmInitialized) {
-                return;
-            }
+    if (typeof Go === "undefined") {
+        throw new Error("wasm_exec.js not found or not loaded.");
+    }
 
-            // Create a new Go instance
-            goInstance = new Go();
+    // Avoid double-initialization
+    if (wasmInitialized) {
+        return;
+    }
 
-            // Load the WASM file over HTTP and instantiate it
-            const result = await WebAssembly.instantiateStreaming(
-                fetch(wasmUrl),
-                goInstance.importObject
-            );
+    goInstance = new Go();
 
-            // Run the Go instance
-            goInstance.run(result.instance);
+    // Handle different environments for fetching WASM
+    let wasmModule;
+    if (typeof window !== "undefined") {
+        // Browser environment
+        wasmModule = await WebAssembly.instantiateStreaming(fetch(wasmUrl), goInstance.importObject);
+    } else {
+        // Node.js environment
+        const fs = await import("fs/promises");
+        const wasmBuffer = await fs.readFile(wasmUrl);
+        wasmModule = await WebAssembly.instantiate(wasmBuffer, goInstance.importObject);
+    }
 
-            wasmInitialized = true;
-        },
+    goInstance.run(wasmModule.instance);
+    wasmInitialized = true;
+};
 
-        // load fetches a data file and calls the WASM parse method
-        load: async function (dataUrl) {
-            if (!wasmInitialized) {
-                throw new Error("WASM not initialized. Call initilize() first.");
-            }
-            if (!dataUrl) {
-                throw new Error("No data URL provided to load().");
-            }
+const TimeLine = async function (uri) {
+    if (!wasmInitialized) {
+        throw new Error("WASM not initialized. Call initialize() first.");
+    }
+    if (!uri) {
+        throw new Error("No data URL provided to load().");
+    }
 
-            // Fetch the binary data
-            const resp = await fetch(dataUrl);
-            if (!resp.ok) {
-                throw new Error(`Failed to fetch data file: ${resp.statusText}`);
-            }
+    let dataBytes;
+    if (typeof window !== "undefined") {
+        // Fetch in browser
+        const response = await fetch(uri, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/storage-timeline",
+            },
+        });
 
-            // Convert response to ArrayBuffer -> Uint8Array
-            const buf = await resp.arrayBuffer();
-            const dataBytes = new Uint8Array(buf);
+        const buffer = await response.arrayBuffer();
+        dataBytes = new Uint8Array(buffer);
+    } else {
+        // Fetch in Node.js (using fs)
+        const fs = await import("fs/promises");
+        dataBytes = new Uint8Array(await fs.readFile(uri));
+    }
 
-            // Now call the WASM parse function, which is exposed under:
-            //   window.StorageTimeline.Timeline.parse(...)
-            // per the Go main.go code
-            return window.StorageTimeline.Timeline.parse(dataBytes);
-        },
-    };
+    return window.StorageTimeline.Timeline.parse(dataBytes);
+};
 
-    // Return our component
-    return {
-        Timeline,
-    };
-})();
+const Schema = async function () {
+    return TimeLine;
+};
 
-export default StorageTimeline;
+const Storage = async function () {
+    this.initialize = initialize;
+    return Schema;
+};
+
+// Export based on environment
+if (typeof window !== "undefined") {
+    initialize().then(() => {
+        window.StorageTimeline.Storage = Storage;
+    });
+} else if (typeof module !== "undefined" && module.exports) {
+    module.exports = Storage;
+}
+
