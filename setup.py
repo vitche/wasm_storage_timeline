@@ -11,7 +11,7 @@ class PostInstallCommand(install):
 
 setup(
     name="wasm_storage_timeline",
-    version="1.0.0",
+    version="1.0.1",
     description="Client library for interacting with storage timeline services",
     author="Illiatea",
     author_email="illiatea2@gmail.com",

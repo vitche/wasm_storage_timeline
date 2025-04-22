@@ -167,3 +167,16 @@ class GoWasmRunner:
                 os.remove(self.node_script_path)
             except:
                 pass
+
+
+class WASMRunnerFactory:
+    """
+    Singleton factory for GoWasmRunner instances
+    """
+    _instance = None
+
+    @classmethod
+    def instance(cls):
+        if cls._instance is None:
+            cls._instance = GoWasmRunner()
+        return cls._instance
