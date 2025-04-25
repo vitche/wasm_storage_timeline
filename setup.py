@@ -5,17 +5,17 @@ from setuptools.command.install import install
 class PostInstallCommand(install):
     def run(self):
         install.run(self)
-        import download_wasm
-        download_wasm.download()
+        import wasm_download
+        wasm_download.download()
 
 
 setup(
     name="wasm_storage_timeline",
-    version="1.0.1",
-    description="Client library for interacting with storage timeline services",
+    version="1.0.3",
+    description="`Storage.Timeline` database WASM implementation.",
     author="Illiatea",
     author_email="illiatea2@gmail.com",
-    py_modules=["wasm_runner", "download_wasm"],
+    py_modules=["wasm_execute", "wasm_download"],
     cmdclass={'install': PostInstallCommand},
     install_requires=['python-dotenv'],
 )

@@ -6,7 +6,7 @@ import tempfile
 import base64
 
 
-class GoWasmRunner:
+class WASMExecutor:
     """
     Class for running Go WebAssembly module through Node.js
     """
@@ -169,7 +169,7 @@ class GoWasmRunner:
                 pass
 
 
-class WASMRunnerFactory:
+class WASMExecutorFactory:
     """
     Singleton factory for GoWasmRunner instances
     """
@@ -178,5 +178,5 @@ class WASMRunnerFactory:
     @classmethod
     def instance(cls):
         if cls._instance is None:
-            cls._instance = GoWasmRunner()
+            cls._instance = WASMExecutor()
         return cls._instance

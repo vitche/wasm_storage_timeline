@@ -1,4 +1,6 @@
+.svn
 .env
 .idea
 .wasm
 node_modules
+*.egg-info

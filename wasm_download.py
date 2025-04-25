@@ -1,7 +1,6 @@
 import os
 import urllib.request
 import site
-import sys
 
 
 def download():
@@ -30,7 +29,7 @@ def download():
     js_path = os.path.join(wasm_dir, "wasm_exec.js")
 
     try:
-        print(f"Downloading storage_timeline.wasm from {wasm_url}")
+        print(f"Downloading `storage_timeline.wasm` from {wasm_url}")
         # Create SSL context that doesn't verify certificates
         import ssl
         ssl_context = ssl.create_default_context()
@@ -43,7 +42,7 @@ def download():
             with open(wasm_path, 'wb') as f:
                 f.write(wasm_content)
 
-        print(f"Downloading wasm_exec.js from {js_url}")
+        print(f"Downloading `wasm_exec.js` from {js_url}")
         # Download JS file
         with urllib.request.urlopen(js_url, context=ssl_context) as response:
             js_content = response.read()
