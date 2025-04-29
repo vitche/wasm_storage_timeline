@@ -45,7 +45,7 @@ func readBufferWasm(this js.Value, args []js.Value) interface{} {
 
 		// Create JS object representation
 		record := map[string]interface{}{
-			"timestamp": timestamp,
+			"time": timestamp,
 			"value":     string(value),
 		}
 
