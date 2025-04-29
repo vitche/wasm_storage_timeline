@@ -11,7 +11,7 @@ class PostInstallCommand(install):
 
 setup(
     name="wasm_storage_timeline",
-    version="1.0.3",
+    version="1.0.4",
     description="`Storage.Timeline` database WASM implementation.",
     author="Illiatea",
     author_email="illiatea2@gmail.com",
